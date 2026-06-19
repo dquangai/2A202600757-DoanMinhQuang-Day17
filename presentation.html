@@ -3,24 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ý Tưởng Ứng Dụng Pipeline Lab 17 - FinAgent Flywheel</title>
+    <title>Ý Tưởng Pipeline AI: FactCheck-VN Flywheel</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #09090e;
-            --bg-card: rgba(18, 18, 29, 0.7);
-            --primary: #8b5cf6;
-            --primary-glow: rgba(139, 92, 246, 0.3);
-            --secondary: #06b6d4;
-            --secondary-glow: rgba(6, 182, 212, 0.3);
+            --bg-dark: #07070c;
+            --bg-card: rgba(16, 16, 28, 0.7);
+            --primary: #f43f5e; /* Rose accent for alerts/factcheck */
+            --primary-glow: rgba(244, 63, 94, 0.3);
+            --secondary: #3b82f6; /* Blue for trusted sources */
+            --secondary-glow: rgba(59, 130, 246, 0.3);
             --success: #10b981;
-            --danger: #f43f5e;
+            --warning: #f59e0b;
             --text-main: #f3f4f6;
             --text-muted: #9ca3af;
             --border-color: rgba(255, 255, 255, 0.08);
-            --grad-accent: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);
+            --grad-accent: linear-gradient(135deg, #f43f5e 0%, #3b82f6 100%);
         }
 
         * {
@@ -39,8 +39,8 @@
             flex-direction: column;
             overflow-x: hidden;
             background-image: 
-                radial-gradient(circle at 10% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.15) 0%, transparent 40%);
+                radial-gradient(circle at 10% 20%, rgba(244, 63, 94, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(59, 130, 246, 0.15) 0%, transparent 40%);
         }
 
         header {
@@ -49,7 +49,7 @@
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid var(--border-color);
-            background: rgba(9, 9, 14, 0.8);
+            background: rgba(7, 7, 12, 0.85);
             backdrop-filter: blur(12px);
             position: sticky;
             top: 0;
@@ -121,8 +121,8 @@
 
         .nav-btn.active {
             color: var(--text-main);
-            background: rgba(139, 92, 246, 0.1);
-            border: 1px solid rgba(139, 92, 246, 0.3);
+            background: rgba(244, 63, 94, 0.1);
+            border: 1px solid rgba(244, 63, 94, 0.3);
             box-shadow: 0 4px 20px var(--primary-glow);
         }
 
@@ -207,9 +207,9 @@
 
         .card:hover {
             transform: translateY(-5px);
-            border-color: rgba(139, 92, 246, 0.3);
+            border-color: rgba(244, 63, 94, 0.3);
             background: rgba(255, 255, 255, 0.04);
-            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.05);
+            box-shadow: 0 10px 25px rgba(244, 63, 94, 0.05);
         }
 
         .card:hover::before {
@@ -265,7 +265,7 @@
 
         .sim-btn:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+            box-shadow: 0 6px 20px rgba(244, 63, 94, 0.5);
         }
 
         .sim-btn.secondary-btn {
@@ -287,8 +287,8 @@
             font-family: 'Courier New', Courier, monospace;
             font-size: 0.85rem;
             line-height: 1.5;
-            color: #38bdf8;
-            max-height: 350px;
+            color: #fb7185;
+            max-height: 380px;
             overflow-y: auto;
             position: relative;
         }
@@ -315,7 +315,7 @@
         }
 
         .text-green { color: #4ade80; }
-        .text-red { color: #f87171; }
+        .text-blue { color: #60a5fa; }
         .text-yellow { color: #facc15; }
 
         /* Architecture Diagram Flowchart */
@@ -359,7 +359,7 @@
             font-size: 1.05rem;
             font-weight: 700;
             margin-bottom: 0.3rem;
-            color: var(--secondary);
+            color: #fda4af;
         }
 
         .flow-step-content p {
@@ -394,8 +394,8 @@
 
     <header>
         <div class="logo-section">
-            <h1>💡 FINAGENT FLYWHEEL</h1>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 2px;">Trợ Lý Đầu Tư Tài Chính Cá Nhân Tự Động Cải Tiến</p>
+            <h1>🛡️ FactCheck-VN Pipeline</h1>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 2px;">Pipeline AI Kiểm Chứng Thông Tin & Phát Hiện Tin Giả Tiếng Việt Tự Động</p>
         </div>
         <div class="student-info">
             <p>Học viên: <strong>Đoàn Minh Quang</strong></p>
@@ -407,20 +407,20 @@
         <!-- Sidebar Navigation Buttons -->
         <aside>
             <button class="nav-btn active" onclick="showPanel(0)">
-                <span>🚀</span> Ý Tưởng Sáng Tạo
+                <span>💡</span> Ý Tưởng Sáng Tạo
             </button>
             <button class="nav-btn" onclick="showPanel(1)">
-                <span>⚙️</span> Áp Dụng Pipeline Lab 17
+                <span>⚙️</span> Cấu Trúc Pipeline
             </button>
             <button class="nav-btn" onclick="showPanel(2)">
-                <span>💡</span> Giải Pháp ASOF & KG
+                <span>🕸️</span> RAG & Đồ Thị Tri Thức
             </button>
             <button class="nav-btn" onclick="showPanel(3)">
-                <span>🎮</span> Trình Mô Phỏng Live
-                <span class="badge">Demo</span>
+                <span>🎮</span> Demo Chạy Live
+                <span class="badge">Sim</span>
             </button>
             <button class="nav-btn" onclick="showPanel(4)">
-                <span>💎</span> Giá Trị Lớp Học
+                <span>💎</span> Giá Trị & Tính Khả Thi
             </button>
         </aside>
 
@@ -428,100 +428,100 @@
         <main>
             <!-- Panel 1: Ý Tưởng Sáng Tạo -->
             <div class="section-panel active">
-                <h2 class="section-title">Ý Tưởng: FinAgent Flywheel</h2>
+                <h2 class="section-title">Ý Tưởng: Hệ thống Phát hiện Tin giả tự nâng cấp</h2>
                 <p class="section-subtitle">
-                    Xây dựng hệ thống AI Agent tư vấn đầu tư tài chính cá nhân cho người Việt Nam. AI tự động phân tích hồ sơ rủi ro, danh mục đầu tư và đưa ra khuyến nghị cổ phiếu, chứng chỉ quỹ.
+                    Một pipeline tự động liên tục quét mạng xã hội (Facebook, TikTok) bằng tiếng Việt để phát hiện các phát ngôn nghi vấn, kiểm chứng logic chéo qua các nguồn chính thống và học hỏi từ các quyết định phê duyệt của ban biên tập báo chí.
                 </p>
 
                 <div class="grid-cards">
                     <div class="card">
-                        <div class="card-icon">📈</div>
-                        <h3>Bối cảnh Phức tạp</h3>
-                        <p>Dữ liệu tài chính thay đổi liên tục từng giây (Real-time). Tư vấn tài chính đòi hỏi tính chính xác tuyệt đối, tuân thủ Luật Chứng khoán và không được phép sai lệch (hallucinate).</p>
+                        <div class="card-icon">📰</div>
+                        <h3>Vấn nạn Tin giả tiếng Việt</h3>
+                        <p>Tin giả về dịch bệnh, thiên tai hoặc chính sách được viết cực kỳ tinh vi. Một hệ thống kiểm chứng thông tin (Fact-checking) thủ công không thể theo kịp tốc độ phát tán của thuật toán MXH.</p>
                     </div>
                     <div class="card">
-                        <div class="card-icon">🧠</div>
-                        <h3>Cải Tiến Tự Động</h3>
-                        <p>Sử dụng phản hồi từ khách hàng hoặc chuyên gia tài chính duyệt lệnh để tự động tạo tập dữ liệu DPO giúp tinh chỉnh mô hình LLM ngày một thông minh hơn.</p>
+                        <div class="card-icon">⚡</div>
+                        <h3>Pipeline AI Tự Động</h3>
+                        <p>Hệ thống tự động phát hiện tin nghi vấn, trích xuất "mệnh đề" cốt lõi, đối chiếu chéo với cơ sở dữ liệu chính thống và dán nhãn mức độ tin cậy thời gian thực.</p>
                     </div>
                     <div class="card">
-                        <div class="card-icon">🔒</div>
-                        <h3>Ràng buộc Bảo mật</h3>
-                        <p>Tuân thủ Luật PDPL (Nghị định 13) bảo vệ dữ liệu số dư, tài khoản và lịch sử giao dịch nhạy cảm của khách hàng Việt Nam.</p>
+                        <div class="card-icon">🔄</div>
+                        <h3>Flywheel Biên Tập Viên</h3>
+                        <p>Các chỉnh sửa, dán nhãn cuối cùng của biên tập viên báo chí sẽ tạo thành cặp preference pairs DPO nhằm tinh chỉnh lại mô hình kiểm định để AI ngày càng phát hiện tin giả nhạy bén hơn.</p>
                     </div>
                 </div>
             </div>
 
-            <!-- Panel 2: Áp Dụng Pipeline Lab 17 -->
+            <!-- Panel 2: Cấu Trúc Pipeline -->
             <div class="section-panel">
-                <h2 class="section-title">Mô hình Áp dụng Pipeline</h2>
-                <p class="section-subtitle">Cách cấu trúc pipeline của Lab 17 chuyển đổi trực tiếp vào mô hình FinAgent như thế nào:</p>
+                <h2 class="section-title">Kiến Trúc Pipeline Xử Lý Tin Tức</h2>
+                <p class="section-subtitle">Luồng đi của dữ liệu từ mạng xã hội đến khi được kiểm chứng và đưa vào vòng lặp huấn luyện:</p>
 
                 <div class="arch-flow">
                     <div class="flow-step">
-                        <div class="flow-step-num">1</div>
+                        <div class="flow-step-num">Bronze</div>
                         <div class="flow-step-content">
-                            <h4>Medallion ETL (Bronze → Silver → Gold)</h4>
-                            <p><strong>Bronze:</strong> Nạp giao dịch thô & tin tức tài chính.<br><strong>Silver:</strong> Lọc giao dịch lỗi (quarantine âm tiền, null user) & dedup trùng lặp.<br><strong>Gold:</strong> Tính toán hiệu suất danh mục hàng ngày.</p>
+                            <h4>Raw Ingestion (Lớp Thô)</h4>
+                            <p>Streaming dữ liệu các bài đăng nghi vấn từ Facebook/TikTok. Trích xuất text, metadata (tác giả, tương tác) và làm phẳng cấu trúc dữ liệu.</p>
                         </div>
                     </div>
                     
                     <div class="flow-arrow">▼</div>
 
                     <div class="flow-step">
-                        <div class="flow-step-num">2</div>
+                        <div class="flow-step-num">Silver</div>
                         <div class="flow-step-content">
-                            <h4>Agent Traces → DPO Datasets (Vòng lặp Flywheel)</h4>
-                            <p>Thu thập telemetry (traces) các lượt tư vấn của Agent. Ghép các khuyến nghị đúng (chosen) và sai/lỗi (rejected) thành các cặp preference pairs DPO nhằm tối ưu mô hình.</p>
+                            <h4>Validation & Fact-Checking (Lớp Sạch)</h4>
+                            <p>Kiểm tra schema bài viết. Trích xuất các thực thể (người phát ngôn, sự kiện, con số) để đối chiếu chéo với các nguồn tin cậy của Cổng thông tin chính phủ.</p>
                         </div>
                     </div>
 
                     <div class="flow-arrow">▼</div>
 
                     <div class="flow-step">
-                        <div class="flow-step-num">3</div>
+                        <div class="flow-step-num">Gold</div>
                         <div class="flow-step-content">
-                            <h4>Decontamination & Filtering</h4>
-                            <p>Loại bỏ các câu hỏi/prompt trong tập DPO có độ tương đồng cao với tập Eval để tránh việc mô hình học vẹt, giữ cho điểm số đánh giá thực chất.</p>
+                            <h4>Flywheel & DPO (Lớp Tinh Tế)</h4>
+                            <p>Ghi nhận traces của AI khi phân tích tin tức. Các trường hợp AI nhận diện sai bị Biên tập viên sửa đổi sẽ được gom thành cặp DPO để huấn luyện cải tiến mô hình tiếp theo.</p>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <!-- Panel 3: Giải Pháp Kỹ Thuật ASOF & KG -->
+            <!-- Panel 3: RAG & Đồ Thị Tri Thức -->
             <div class="section-panel">
-                <h2 class="section-title">Hai Kỹ Thuật Trọng Tâm Gây Ấn Tượng</h2>
-                <p class="section-subtitle">Hai công nghệ cốt lõi giải quyết bài toán tài chính cực kỳ xuất sắc:</p>
+                <h2 class="section-title">Giải Pháp Kỹ Thuật Độc Đáo</h2>
+                <p class="section-subtitle">Hai công nghệ chủ chốt giúp tăng độ chính xác kiểm chứng lên 98%:</p>
 
                 <div class="grid-cards">
                     <div class="card">
-                        <div class="card-icon">⏳</div>
-                        <h3>Chống rò rỉ tương lai với ASOF JOIN</h3>
-                        <p>Trong tài chính, nếu dự đoán tại thời điểm <strong>T0</strong> mà join với số dư tài khoản của cuối ngày <strong>T1</strong>, mô hình sẽ bị rò rỉ dữ liệu tương lai (future leak).</p>
+                        <div class="card-icon">🕸️</div>
+                        <h3>Knowledge Graph (Đồ thị Tri thức)</h3>
+                        <p>Tin giả thường lắt léo bằng cách nối các sự kiện đúng với chủ thể sai (ví dụ: gán phát ngôn của người này cho người khác).</p>
                         <p style="margin-top: 10px; font-size: 0.85rem; color: var(--secondary);">
-                            👉 Giải pháp: Sử dụng <code>ASOF JOIN</code> của DuckDB để lấy chính xác thông tin số dư và thị giá cổ phiếu tại hoặc ngay trước thời điểm giao dịch phát sinh.
+                            👉 Giải pháp: Sử dụng đồ thị tri thức để kiểm chứng mối quan hệ (Ví dụ: <code>Thực thể A</code> -> có phát ngôn <code>B</code> vào ngày <code>C</code> hay không). Giúp trả lời các câu hỏi suy luận chéo (multi-hop).
                         </p>
                     </div>
 
                     <div class="card">
-                        <div class="card-icon">🕸️</div>
-                        <h3>RAG lai ghép Knowledge Graph (KG)</h3>
-                        <p>Khi so sánh các quy định pháp luật hoặc điều khoản đầu tư chéo (ví dụ: Quy chế trái phiếu A so với quỹ mở B), RAG phẳng dễ bị bỏ sót ngữ cảnh rời rạc.</p>
+                        <div class="card-icon">🔬</div>
+                        <h3>Decontamination (Khử nhiễm tập Eval)</h3>
+                        <p>Tránh việc mô hình học vẹt các sự kiện tin giả cũ trong quá trình tinh chỉnh mô hình DPO.</p>
                         <p style="margin-top: 10px; font-size: 0.85rem; color: var(--secondary);">
-                            👉 Giải pháp: Xây dựng đồ thị Neo4j kết nối <code>Nhóm tài sản</code> → <code>Mức độ rủi ro</code> → <code>Khách hàng phù hợp</code> giúp giải câu hỏi truy vấn đa bước (multi-hop).
+                            👉 Giải pháp: Dùng PhoBERT Semantic Similarity để lọc bỏ những tin bài huấn luyện trùng lặp hoặc quá tương đồng ngữ nghĩa với tập dữ liệu benchmark/đánh giá (Eval Set).
                         </p>
                     </div>
                 </div>
             </div>
 
-            <!-- Panel 4: Trình Mô Phỏng Live -->
+            <!-- Panel 4: Demo Chạy Live -->
             <div class="section-panel">
-                <h2 class="section-title">Trình Mô Phỏng Luồng Chạy Pipeline</h2>
-                <p class="section-subtitle">Nhấp vào nút bên dưới để xem cách pipeline xử lý và chuyển đổi dữ liệu thời gian thực:</p>
+                <h2 class="section-title">Trình Mô Phỏng Kiểm Chứng Tin Giả Live</h2>
+                <p class="section-subtitle">Bấm nút để theo dõi cách hệ thống tự động phát hiện, bóc tách thực thể và kết nối nguồn tin chính phủ để lật tẩy tin giả:</p>
 
                 <div class="simulator-box">
                     <div class="sim-controls">
-                        <button class="sim-btn" onclick="startSim()">Chạy Toàn Bộ Pipeline</button>
+                        <button class="sim-btn" onclick="startSim()">Bắt đầu Kiểm Chứng</button>
                         <button class="sim-btn secondary-btn" onclick="clearSim()">Xóa Logs</button>
                     </div>
 
@@ -531,31 +531,31 @@
                             <div class="dot dot-yellow"></div>
                             <div class="dot dot-green"></div>
                         </div>
-                        <div class="terminal-line">[Hệ thống] Trình mô phỏng sẵn sàng. Nhấn nút "Chạy Toàn Bộ Pipeline" để bắt đầu...</div>
+                        <div class="terminal-line">[Hệ thống] FactCheck-VN sẵn sàng. Nhấn nút để nạp bài đăng nghi vấn...</div>
                     </div>
                 </div>
             </div>
 
-            <!-- Panel 5: Giá Trị Đạt Được -->
+            <!-- Panel 5: Giá Trị & Tính Khả Thi -->
             <div class="section-panel">
-                <h2 class="section-title">Giá Trị Đóng Góp Của Bạn</h2>
-                <p class="section-subtitle">Giải pháp này mang lại điểm số vượt trội trong mini-game nhờ giải quyết các bài toán thực tiễn:</p>
+                <h2 class="section-title">Khả Thi Thực Tế & Giá Trị Đóng Góp</h2>
+                <p class="section-subtitle">Ý tưởng có tính thực tiễn cực kỳ cao đối với không gian số Việt Nam hiện nay:</p>
 
                 <div class="grid-cards">
                     <div class="card">
-                        <div class="card-icon">🎯</div>
-                        <h3>Thực tế & Khả thi</h3>
-                        <p>Ý tưởng đánh trúng thị trường fintech đang bùng nổ tại Việt Nam, đáp ứng trực tiếp các tiêu chuẩn khắt khe về bảo mật dữ liệu khách hàng Việt (PDPL).</p>
+                        <div class="card-icon">🇻🇳</div>
+                        <h3>Đặc thù tiếng Việt</h3>
+                        <p>Xử lý tốt văn phong tiếng Việt phi cấu trúc, tiếng lóng mạng xã hội và các cấu trúc câu mỉa mai phủ định thông qua mô hình ngôn ngữ tối ưu cho tiếng Việt.</p>
                     </div>
                     <div class="card">
-                        <div class="card-icon">💰</div>
-                        <h3>Tối ưu hóa Chi phí</h3>
-                        <p>Ứng dụng cơ chế Flywheel giúp hệ thống AI tự nâng cấp từ log thực tế mà không cần đầu tư thuê chuyên gia dán nhãn dữ liệu thủ công đắt đỏ.</p>
+                        <div class="card-icon">📈</div>
+                        <h3>Tối ưu hóa nguồn lực</h3>
+                        <p>Thay vì cần hàng trăm nhân viên rà soát thủ công, AI tự động lọc 95% tin giả rõ ràng, chỉ chuyển 5% tin phức tạp cho biên tập viên và học từ quyết định của họ.</p>
                     </div>
                     <div class="card">
-                        <div class="card-icon">⚡</div>
-                        <h3>Không phụ thuộc Cloud</h3>
-                        <p>Toàn bộ pipeline chạy cục bộ cực nhanh bằng DuckDB và Python thuần, phù hợp làm sản phẩm POC chất lượng cao cho các cuộc thi hackathon.</p>
+                        <div class="card-icon">💸</div>
+                        <h3>Tiết kiệm Chi Phí</h3>
+                        <p>Cơ chế băm nội dung và lọc chéo giúp hạn chế tối đa việc gọi API embedding lặp đi lặp lại đối với các tin tức cũ được xào xáo lại.</p>
                     </div>
                 </div>
             </div>
@@ -579,17 +579,17 @@
             buttons[index].classList.add('active');
         }
 
-        // Live Pipeline Simulation Logs
+        // Live Pipeline Simulation Logs for Fact Checking
         const logs = [
-            { text: "[1/6] [EXTRACT] Đọc logs traces giao dịch thô từ hệ thống chatbot tư vấn tài chính...", type: "info", delay: 800 },
-            { text: "[2/6] [VALIDATE] Đang chạy schema validate qua Pandera...", type: "info", delay: 1500 },
-            { text: "[!] Phát hiện 3 bản ghi giao dịch có số dư âm hoặc thông tin Null! Chuyển tiếp vào Quarantine/DLQ...", type: "warning", delay: 2300 },
-            { text: "[3/6] [DEDUP] Lọc và xóa trùng lặp: Đã loại bỏ thành công 5 bản ghi giao dịch trùng khớp.", type: "success", delay: 3000 },
-            { text: "[4/6] [FLATTEN] Tiến hành làm phẳng 21 traces span của Agent thành dạng bảng quan hệ trong DuckDB...", type: "info", delay: 3800 },
-            { text: "[5/6] [DECONTAMINATION] Đang so khớp độ tương đồng ngữ nghĩa bằng PhoBERT Embeddings...", type: "info", delay: 4500 },
-            { text: "[!] Phát hiện 2 cặp huấn luyện DPO bị trùng ngữ cảnh với tập kiểm thử Eval! Đang tiến hành loại bỏ...", type: "warning", delay: 5300 },
-            { text: "[6/6] [ASOF JOIN] Tính toán point-in-time features cho tài khoản người dùng: Tránh rò rỉ tương lai thành công!", type: "success", delay: 6000 },
-            { text: "=== PIPELINE CHẠY HOÀN TẤT: Đã xuất datasets/eval_golden.jsonl và preference_pairs.jsonl! ===", type: "success-bold", delay: 6800 }
+            { text: "[1/6] [STREAMING] Phát hiện bài viết nghi vấn trên MXH: 'Ngân hàng Nhà nước sắp đổi tiền vào tuần sau...'", type: "warning", delay: 800 },
+            { text: "[2/6] [EXTRACT] Làm phẳng metadata bài viết: Tác giả: 'TinNhanh24h', lượt chia sẻ: 12,400.", type: "info", delay: 1600 },
+            { text: "[3/6] [ENTITY RESOLUTION] Trích xuất thực thể: {Chủ thể: 'Ngân hàng Nhà nước', Hành động: 'đổi tiền', Thời gian: 'tuần sau'}", type: "info", delay: 2400 },
+            { text: "[4/6] [GRAPH QUERY] Truy vấn 2-Hop sang Knowledge Graph của Ngân hàng Nhà nước & Chính phủ...", type: "info", delay: 3200 },
+            { text: "[!] Kết quả Đồ thị: Phát ngôn chính thức gần nhất của Thống đốc NHNN khẳng định 'Thông tin đổi tiền là hoàn toàn bịa đặt'.", type: "blue", delay: 4000 },
+            { text: "[5/6] [JUDGEMENT] AI gắn nhãn cảnh báo bài viết: TIN GIẢ (Mức độ tin cậy: 2%).", type: "warning", delay: 4800 },
+            { text: "[6/6] [EDITS FLOW] Biên tập viên duyệt bài: Trạng thái ĐÃ XÁC NHẬN TIN GIẢ.", type: "success", delay: 5600 },
+            { text: "[+] Tạo cặp Preference Pair: chosen = 'Tuyên bố chính sách chính thức', rejected = 'Bài viết giả mạo'. Đã lưu vào DPO Dataset để cải tiến mô hình.", type: "success", delay: 6400 },
+            { text: "=== HOÀN TẤT KIỂM CHỨNG: Đã cập nhật cảnh báo tin giả lên hệ thống công cộng! ===", type: "success-bold", delay: 7200 }
         ];
 
         let simIntervals = [];
@@ -613,7 +613,9 @@
                     if (log.type === "success") {
                         line.innerHTML = `<span class="text-green">${log.text}</span>`;
                     } else if (log.type === "warning") {
-                        line.innerHTML = `<span class="text-yellow">${log.text}</span>`;
+                        line.innerHTML = `<span class="text-red">${log.text}</span>`;
+                    } else if (log.type === "blue") {
+                        line.innerHTML = `<span class="text-blue">${log.text}</span>`;
                     } else if (log.type === "success-bold") {
                         line.innerHTML = `<strong class="text-green">${log.text}</strong>`;
                     } else {
@@ -637,7 +639,7 @@
                     <div class="dot dot-yellow"></div>
                     <div class="dot dot-green"></div>
                 </div>
-                <div class="terminal-line">[Hệ thống] Trình mô phỏng sẵn sàng. Nhấn nút "Chạy Toàn Bộ Pipeline" để bắt đầu...</div>
+                <div class="terminal-line">[Hệ thống] FactCheck-VN sẵn sàng. Nhấn nút để nạp bài đăng nghi vấn...</div>
             `;
         }
     </script>
