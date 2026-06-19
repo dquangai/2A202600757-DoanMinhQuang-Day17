@@ -1,0 +1,645 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ý Tưởng Ứng Dụng Pipeline Lab 17 - FinAgent Flywheel</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-dark: #09090e;
+            --bg-card: rgba(18, 18, 29, 0.7);
+            --primary: #8b5cf6;
+            --primary-glow: rgba(139, 92, 246, 0.3);
+            --secondary: #06b6d4;
+            --secondary-glow: rgba(6, 182, 212, 0.3);
+            --success: #10b981;
+            --danger: #f43f5e;
+            --text-main: #f3f4f6;
+            --text-muted: #9ca3af;
+            --border-color: rgba(255, 255, 255, 0.08);
+            --grad-accent: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            scroll-behavior: smooth;
+        }
+
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(6, 182, 212, 0.15) 0%, transparent 40%);
+        }
+
+        header {
+            padding: 2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--border-color);
+            background: rgba(9, 9, 14, 0.8);
+            backdrop-filter: blur(12px);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .logo-section h1 {
+            font-size: 1.5rem;
+            font-weight: 800;
+            background: var(--grad-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -0.5px;
+        }
+
+        .student-info {
+            text-align: right;
+        }
+
+        .student-info p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+        }
+
+        .student-info strong {
+            color: var(--text-main);
+            font-weight: 600;
+        }
+
+        .main-container {
+            flex: 1;
+            display: grid;
+            grid-template-columns: 280px 1fr;
+            max-width: 1600px;
+            margin: 0 auto;
+            width: 100%;
+            padding: 2rem 5%;
+            gap: 2rem;
+        }
+
+        /* Sidebar Navigation */
+        aside {
+            display: flex;
+            flex-direction: column;
+            gap: 0.8rem;
+        }
+
+        .nav-btn {
+            background: transparent;
+            border: 1px solid transparent;
+            color: var(--text-muted);
+            padding: 1rem 1.2rem;
+            border-radius: 12px;
+            text-align: left;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+        }
+
+        .nav-btn:hover {
+            color: var(--text-main);
+            background: rgba(255, 255, 255, 0.03);
+            border-color: var(--border-color);
+        }
+
+        .nav-btn.active {
+            color: var(--text-main);
+            background: rgba(139, 92, 246, 0.1);
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            box-shadow: 0 4px 20px var(--primary-glow);
+        }
+
+        .nav-btn span.badge {
+            background: var(--primary);
+            color: white;
+            font-size: 0.75rem;
+            padding: 2px 6px;
+            border-radius: 6px;
+            margin-left: auto;
+        }
+
+        /* Content Sections */
+        main {
+            min-height: 500px;
+        }
+
+        .section-panel {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: 24px;
+            padding: 2.5rem;
+            backdrop-filter: blur(20px);
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            display: none;
+            animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+        }
+
+        .section-panel.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 0.5rem;
+            background: var(--grad-accent);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-muted);
+            margin-bottom: 2rem;
+            line-height: 1.5;
+        }
+
+        .grid-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin-top: 2rem;
+        }
+
+        .card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: var(--grad-accent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            border-color: rgba(139, 92, 246, 0.3);
+            background: rgba(255, 255, 255, 0.04);
+            box-shadow: 0 10px 25px rgba(139, 92, 246, 0.05);
+        }
+
+        .card:hover::before {
+            opacity: 1;
+        }
+
+        .card-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+        }
+
+        .card h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            margin-bottom: 0.6rem;
+            color: var(--text-main);
+        }
+
+        .card p {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            line-height: 1.6;
+        }
+
+        /* Interactive Simulator Styles */
+        .simulator-box {
+            background: #06060a;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .sim-controls {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            flex-wrap: wrap;
+        }
+
+        .sim-btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 0.8rem 1.5rem;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            box-shadow: 0 4px 15px var(--primary-glow);
+        }
+
+        .sim-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
+        }
+
+        .sim-btn.secondary-btn {
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--text-main);
+            border: 1px solid var(--border-color);
+            box-shadow: none;
+        }
+
+        .sim-btn.secondary-btn:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .terminal-screen {
+            background: #020204;
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-radius: 12px;
+            padding: 1.2rem;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 0.85rem;
+            line-height: 1.5;
+            color: #38bdf8;
+            max-height: 350px;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .terminal-header {
+            display: flex;
+            gap: 6px;
+            margin-bottom: 12px;
+        }
+
+        .dot {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+        }
+
+        .dot-red { background: #ef4444; }
+        .dot-yellow { background: #eab308; }
+        .dot-green { background: #22c55e; }
+
+        .terminal-line {
+            margin-bottom: 6px;
+            animation: typeEffect 0.3s ease forwards;
+        }
+
+        .text-green { color: #4ade80; }
+        .text-red { color: #f87171; }
+        .text-yellow { color: #facc15; }
+
+        /* Architecture Diagram Flowchart */
+        .arch-flow {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+            align-items: center;
+            margin: 2rem 0;
+        }
+
+        .flow-step {
+            width: 100%;
+            max-width: 650px;
+            background: rgba(255, 255, 255, 0.01);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 1.2rem 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+            position: relative;
+        }
+
+        .flow-step-num {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: var(--grad-accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 800;
+            font-size: 0.95rem;
+            color: white;
+            flex-shrink: 0;
+            box-shadow: 0 0 15px var(--primary-glow);
+        }
+
+        .flow-step-content h4 {
+            font-size: 1.05rem;
+            font-weight: 700;
+            margin-bottom: 0.3rem;
+            color: var(--secondary);
+        }
+
+        .flow-step-content p {
+            font-size: 0.85rem;
+            color: var(--text-muted);
+            line-height: 1.5;
+        }
+
+        .flow-arrow {
+            font-size: 1.5rem;
+            color: var(--primary);
+            opacity: 0.6;
+        }
+
+        /* Footer */
+        footer {
+            padding: 2rem;
+            text-align: center;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-muted);
+            font-size: 0.85rem;
+            margin-top: 4rem;
+        }
+
+        footer a {
+            color: var(--secondary);
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo-section">
+            <h1>💡 FINAGENT FLYWHEEL</h1>
+            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 2px;">Trợ Lý Đầu Tư Tài Chính Cá Nhân Tự Động Cải Tiến</p>
+        </div>
+        <div class="student-info">
+            <p>Học viên: <strong>Đoàn Minh Quang</strong></p>
+            <p>Mã học viên: <strong>2A202600757</strong></p>
+        </div>
+    </header>
+
+    <div class="main-container">
+        <!-- Sidebar Navigation Buttons -->
+        <aside>
+            <button class="nav-btn active" onclick="showPanel(0)">
+                <span>🚀</span> Ý Tưởng Sáng Tạo
+            </button>
+            <button class="nav-btn" onclick="showPanel(1)">
+                <span>⚙️</span> Áp Dụng Pipeline Lab 17
+            </button>
+            <button class="nav-btn" onclick="showPanel(2)">
+                <span>💡</span> Giải Pháp ASOF & KG
+            </button>
+            <button class="nav-btn" onclick="showPanel(3)">
+                <span>🎮</span> Trình Mô Phỏng Live
+                <span class="badge">Demo</span>
+            </button>
+            <button class="nav-btn" onclick="showPanel(4)">
+                <span>💎</span> Giá Trị Lớp Học
+            </button>
+        </aside>
+
+        <!-- Main Content Area -->
+        <main>
+            <!-- Panel 1: Ý Tưởng Sáng Tạo -->
+            <div class="section-panel active">
+                <h2 class="section-title">Ý Tưởng: FinAgent Flywheel</h2>
+                <p class="section-subtitle">
+                    Xây dựng hệ thống AI Agent tư vấn đầu tư tài chính cá nhân cho người Việt Nam. AI tự động phân tích hồ sơ rủi ro, danh mục đầu tư và đưa ra khuyến nghị cổ phiếu, chứng chỉ quỹ.
+                </p>
+
+                <div class="grid-cards">
+                    <div class="card">
+                        <div class="card-icon">📈</div>
+                        <h3>Bối cảnh Phức tạp</h3>
+                        <p>Dữ liệu tài chính thay đổi liên tục từng giây (Real-time). Tư vấn tài chính đòi hỏi tính chính xác tuyệt đối, tuân thủ Luật Chứng khoán và không được phép sai lệch (hallucinate).</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">🧠</div>
+                        <h3>Cải Tiến Tự Động</h3>
+                        <p>Sử dụng phản hồi từ khách hàng hoặc chuyên gia tài chính duyệt lệnh để tự động tạo tập dữ liệu DPO giúp tinh chỉnh mô hình LLM ngày một thông minh hơn.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">🔒</div>
+                        <h3>Ràng buộc Bảo mật</h3>
+                        <p>Tuân thủ Luật PDPL (Nghị định 13) bảo vệ dữ liệu số dư, tài khoản và lịch sử giao dịch nhạy cảm của khách hàng Việt Nam.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel 2: Áp Dụng Pipeline Lab 17 -->
+            <div class="section-panel">
+                <h2 class="section-title">Mô hình Áp dụng Pipeline</h2>
+                <p class="section-subtitle">Cách cấu trúc pipeline của Lab 17 chuyển đổi trực tiếp vào mô hình FinAgent như thế nào:</p>
+
+                <div class="arch-flow">
+                    <div class="flow-step">
+                        <div class="flow-step-num">1</div>
+                        <div class="flow-step-content">
+                            <h4>Medallion ETL (Bronze → Silver → Gold)</h4>
+                            <p><strong>Bronze:</strong> Nạp giao dịch thô & tin tức tài chính.<br><strong>Silver:</strong> Lọc giao dịch lỗi (quarantine âm tiền, null user) & dedup trùng lặp.<br><strong>Gold:</strong> Tính toán hiệu suất danh mục hàng ngày.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="flow-arrow">▼</div>
+
+                    <div class="flow-step">
+                        <div class="flow-step-num">2</div>
+                        <div class="flow-step-content">
+                            <h4>Agent Traces → DPO Datasets (Vòng lặp Flywheel)</h4>
+                            <p>Thu thập telemetry (traces) các lượt tư vấn của Agent. Ghép các khuyến nghị đúng (chosen) và sai/lỗi (rejected) thành các cặp preference pairs DPO nhằm tối ưu mô hình.</p>
+                        </div>
+                    </div>
+
+                    <div class="flow-arrow">▼</div>
+
+                    <div class="flow-step">
+                        <div class="flow-step-num">3</div>
+                        <div class="flow-step-content">
+                            <h4>Decontamination & Filtering</h4>
+                            <p>Loại bỏ các câu hỏi/prompt trong tập DPO có độ tương đồng cao với tập Eval để tránh việc mô hình học vẹt, giữ cho điểm số đánh giá thực chất.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel 3: Giải Pháp Kỹ Thuật ASOF & KG -->
+            <div class="section-panel">
+                <h2 class="section-title">Hai Kỹ Thuật Trọng Tâm Gây Ấn Tượng</h2>
+                <p class="section-subtitle">Hai công nghệ cốt lõi giải quyết bài toán tài chính cực kỳ xuất sắc:</p>
+
+                <div class="grid-cards">
+                    <div class="card">
+                        <div class="card-icon">⏳</div>
+                        <h3>Chống rò rỉ tương lai với ASOF JOIN</h3>
+                        <p>Trong tài chính, nếu dự đoán tại thời điểm <strong>T0</strong> mà join với số dư tài khoản của cuối ngày <strong>T1</strong>, mô hình sẽ bị rò rỉ dữ liệu tương lai (future leak).</p>
+                        <p style="margin-top: 10px; font-size: 0.85rem; color: var(--secondary);">
+                            👉 Giải pháp: Sử dụng <code>ASOF JOIN</code> của DuckDB để lấy chính xác thông tin số dư và thị giá cổ phiếu tại hoặc ngay trước thời điểm giao dịch phát sinh.
+                        </p>
+                    </div>
+
+                    <div class="card">
+                        <div class="card-icon">🕸️</div>
+                        <h3>RAG lai ghép Knowledge Graph (KG)</h3>
+                        <p>Khi so sánh các quy định pháp luật hoặc điều khoản đầu tư chéo (ví dụ: Quy chế trái phiếu A so với quỹ mở B), RAG phẳng dễ bị bỏ sót ngữ cảnh rời rạc.</p>
+                        <p style="margin-top: 10px; font-size: 0.85rem; color: var(--secondary);">
+                            👉 Giải pháp: Xây dựng đồ thị Neo4j kết nối <code>Nhóm tài sản</code> → <code>Mức độ rủi ro</code> → <code>Khách hàng phù hợp</code> giúp giải câu hỏi truy vấn đa bước (multi-hop).
+                        </p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel 4: Trình Mô Phỏng Live -->
+            <div class="section-panel">
+                <h2 class="section-title">Trình Mô Phỏng Luồng Chạy Pipeline</h2>
+                <p class="section-subtitle">Nhấp vào nút bên dưới để xem cách pipeline xử lý và chuyển đổi dữ liệu thời gian thực:</p>
+
+                <div class="simulator-box">
+                    <div class="sim-controls">
+                        <button class="sim-btn" onclick="startSim()">Chạy Toàn Bộ Pipeline</button>
+                        <button class="sim-btn secondary-btn" onclick="clearSim()">Xóa Logs</button>
+                    </div>
+
+                    <div class="terminal-screen" id="simLog">
+                        <div class="terminal-header">
+                            <div class="dot dot-red"></div>
+                            <div class="dot dot-yellow"></div>
+                            <div class="dot dot-green"></div>
+                        </div>
+                        <div class="terminal-line">[Hệ thống] Trình mô phỏng sẵn sàng. Nhấn nút "Chạy Toàn Bộ Pipeline" để bắt đầu...</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Panel 5: Giá Trị Đạt Được -->
+            <div class="section-panel">
+                <h2 class="section-title">Giá Trị Đóng Góp Của Bạn</h2>
+                <p class="section-subtitle">Giải pháp này mang lại điểm số vượt trội trong mini-game nhờ giải quyết các bài toán thực tiễn:</p>
+
+                <div class="grid-cards">
+                    <div class="card">
+                        <div class="card-icon">🎯</div>
+                        <h3>Thực tế & Khả thi</h3>
+                        <p>Ý tưởng đánh trúng thị trường fintech đang bùng nổ tại Việt Nam, đáp ứng trực tiếp các tiêu chuẩn khắt khe về bảo mật dữ liệu khách hàng Việt (PDPL).</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">💰</div>
+                        <h3>Tối ưu hóa Chi phí</h3>
+                        <p>Ứng dụng cơ chế Flywheel giúp hệ thống AI tự nâng cấp từ log thực tế mà không cần đầu tư thuê chuyên gia dán nhãn dữ liệu thủ công đắt đỏ.</p>
+                    </div>
+                    <div class="card">
+                        <div class="card-icon">⚡</div>
+                        <h3>Không phụ thuộc Cloud</h3>
+                        <p>Toàn bộ pipeline chạy cục bộ cực nhanh bằng DuckDB và Python thuần, phù hợp làm sản phẩm POC chất lượng cao cho các cuộc thi hackathon.</p>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <footer>
+        Dự án mini-game lớp học &copy; 2026. Thiết kế bởi học viên <a href="#">Đoàn Minh Quang</a> (MHV: 2A202600757).
+    </footer>
+
+    <script>
+        // Navigation controller
+        function showPanel(index) {
+            const panels = document.querySelectorAll('.section-panel');
+            const buttons = document.querySelectorAll('.nav-btn');
+            
+            panels.forEach(panel => panel.classList.remove('active'));
+            buttons.forEach(btn => btn.classList.remove('active'));
+            
+            panels[index].classList.add('active');
+            buttons[index].classList.add('active');
+        }
+
+        // Live Pipeline Simulation Logs
+        const logs = [
+            { text: "[1/6] [EXTRACT] Đọc logs traces giao dịch thô từ hệ thống chatbot tư vấn tài chính...", type: "info", delay: 800 },
+            { text: "[2/6] [VALIDATE] Đang chạy schema validate qua Pandera...", type: "info", delay: 1500 },
+            { text: "[!] Phát hiện 3 bản ghi giao dịch có số dư âm hoặc thông tin Null! Chuyển tiếp vào Quarantine/DLQ...", type: "warning", delay: 2300 },
+            { text: "[3/6] [DEDUP] Lọc và xóa trùng lặp: Đã loại bỏ thành công 5 bản ghi giao dịch trùng khớp.", type: "success", delay: 3000 },
+            { text: "[4/6] [FLATTEN] Tiến hành làm phẳng 21 traces span của Agent thành dạng bảng quan hệ trong DuckDB...", type: "info", delay: 3800 },
+            { text: "[5/6] [DECONTAMINATION] Đang so khớp độ tương đồng ngữ nghĩa bằng PhoBERT Embeddings...", type: "info", delay: 4500 },
+            { text: "[!] Phát hiện 2 cặp huấn luyện DPO bị trùng ngữ cảnh với tập kiểm thử Eval! Đang tiến hành loại bỏ...", type: "warning", delay: 5300 },
+            { text: "[6/6] [ASOF JOIN] Tính toán point-in-time features cho tài khoản người dùng: Tránh rò rỉ tương lai thành công!", type: "success", delay: 6000 },
+            { text: "=== PIPELINE CHẠY HOÀN TẤT: Đã xuất datasets/eval_golden.jsonl và preference_pairs.jsonl! ===", type: "success-bold", delay: 6800 }
+        ];
+
+        let simIntervals = [];
+
+        function startSim() {
+            clearSim();
+            const logBox = document.getElementById('simLog');
+            logBox.innerHTML = `
+                <div class="terminal-header">
+                    <div class="dot dot-red"></div>
+                    <div class="dot dot-yellow"></div>
+                    <div class="dot dot-green"></div>
+                </div>
+            `;
+            
+            logs.forEach(log => {
+                const timer = setTimeout(() => {
+                    const line = document.createElement('div');
+                    line.className = 'terminal-line';
+                    
+                    if (log.type === "success") {
+                        line.innerHTML = `<span class="text-green">${log.text}</span>`;
+                    } else if (log.type === "warning") {
+                        line.innerHTML = `<span class="text-yellow">${log.text}</span>`;
+                    } else if (log.type === "success-bold") {
+                        line.innerHTML = `<strong class="text-green">${log.text}</strong>`;
+                    } else {
+                        line.textContent = log.text;
+                    }
+                    
+                    logBox.appendChild(line);
+                    logBox.scrollTop = logBox.scrollHeight;
+                }, log.delay);
+                simIntervals.push(timer);
+            });
+        }
+
+        function clearSim() {
+            simIntervals.forEach(timer => clearTimeout(timer));
+            simIntervals = [];
+            const logBox = document.getElementById('simLog');
+            logBox.innerHTML = `
+                <div class="terminal-header">
+                    <div class="dot dot-red"></div>
+                    <div class="dot dot-yellow"></div>
+                    <div class="dot dot-green"></div>
+                </div>
+                <div class="terminal-line">[Hệ thống] Trình mô phỏng sẵn sàng. Nhấn nút "Chạy Toàn Bộ Pipeline" để bắt đầu...</div>
+            `;
+        }
+    </script>
+</body>
+</html>
