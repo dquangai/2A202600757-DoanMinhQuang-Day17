@@ -3,24 +3,32 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Ý Tưởng Pipeline AI: FactCheck-VN Flywheel</title>
+    <title>Hệ thống Kiểm Chứng Tin Giả - FactCheck-VN Pipeline</title>
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg-dark: #07070c;
-            --bg-card: rgba(16, 16, 28, 0.7);
-            --primary: #f43f5e; /* Rose accent for alerts/factcheck */
-            --primary-glow: rgba(244, 63, 94, 0.3);
-            --secondary: #3b82f6; /* Blue for trusted sources */
-            --secondary-glow: rgba(59, 130, 246, 0.3);
-            --success: #10b981;
-            --warning: #f59e0b;
-            --text-main: #f3f4f6;
-            --text-muted: #9ca3af;
-            --border-color: rgba(255, 255, 255, 0.08);
-            --grad-accent: linear-gradient(135deg, #f43f5e 0%, #3b82f6 100%);
+            --bg-light: #f8fafc;
+            --bg-card: #ffffff;
+            --primary: #e11d48; /* Rose/Red warning color */
+            --primary-light: #ffe4e6;
+            --secondary: #2563eb; /* Blue for trusted sources */
+            --secondary-light: #dbeafe;
+            --accent: #7c3aed; /* Purple for Graph/AI */
+            --accent-light: #f3e8ff;
+            --success: #16a34a;
+            --success-light: #dcfce7;
+            --warning: #ea580c;
+            --warning-light: #ffedd5;
+            --text-main: #0f172a;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --grad-accent: linear-gradient(135deg, #e11d48 0%, #2563eb 100%);
+            --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+            --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+            --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+            --shadow-glow: 0 0 20px rgba(37, 99, 235, 0.2);
         }
 
         * {
@@ -28,374 +36,408 @@
             margin: 0;
             padding: 0;
             font-family: 'Plus Jakarta Sans', sans-serif;
-            scroll-behavior: smooth;
         }
 
         body {
-            background-color: var(--bg-dark);
+            background-color: var(--bg-light);
             color: var(--text-main);
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             overflow-x: hidden;
-            background-image: 
-                radial-gradient(circle at 10% 20%, rgba(244, 63, 94, 0.15) 0%, transparent 40%),
-                radial-gradient(circle at 90% 80%, rgba(59, 130, 246, 0.15) 0%, transparent 40%);
         }
 
+        /* Top Header */
         header {
-            padding: 2rem 5%;
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
+            padding: 1.2rem 5%;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border-bottom: 1px solid var(--border-color);
-            background: rgba(7, 7, 12, 0.85);
-            backdrop-filter: blur(12px);
             position: sticky;
             top: 0;
             z-index: 100;
+            box-shadow: var(--shadow-sm);
         }
 
-        .logo-section h1 {
+        .logo-section {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-icon {
+            width: 42px;
+            height: 42px;
+            border-radius: 10px;
+            background: var(--grad-accent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
             font-size: 1.5rem;
             font-weight: 800;
-            background: var(--grad-accent);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            box-shadow: 0 4px 12px rgba(225, 29, 72, 0.25);
+        }
+
+        .logo-title h1 {
+            font-size: 1.25rem;
+            font-weight: 800;
+            color: var(--text-main);
             letter-spacing: -0.5px;
+        }
+
+        .logo-title p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 500;
         }
 
         .student-info {
             text-align: right;
+            background: #f1f5f9;
+            padding: 6px 16px;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
         }
 
         .student-info p {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             color: var(--text-muted);
         }
 
         .student-info strong {
             color: var(--text-main);
-            font-weight: 600;
+            font-weight: 700;
         }
 
-        .main-container {
-            flex: 1;
-            display: grid;
-            grid-template-columns: 280px 1fr;
-            max-width: 1600px;
-            margin: 0 auto;
-            width: 100%;
+        /* Visual Pipeline Diagram (Horizontal Flow) */
+        .pipeline-flow-container {
+            background: var(--bg-card);
+            border-bottom: 1px solid var(--border-color);
             padding: 2rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1rem;
+            overflow-x: auto;
+            box-shadow: var(--shadow-sm);
+        }
+
+        .pipeline-node {
+            flex: 1;
+            min-width: 220px;
+            background: var(--bg-light);
+            border: 2px solid var(--border-color);
+            border-radius: 16px;
+            padding: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            position: relative;
+        }
+
+        .pipeline-node:hover {
+            transform: translateY(-4px);
+            border-color: var(--secondary);
+            background: #fff;
+            box-shadow: var(--shadow-md);
+        }
+
+        .pipeline-node.active {
+            border-color: var(--secondary);
+            background: #fff;
+            box-shadow: var(--shadow-glow);
+        }
+
+        .pipeline-node.glowing {
+            animation: pulse-border 1.5s infinite;
+        }
+
+        @keyframes pulse-border {
+            0% { border-color: var(--border-color); box-shadow: none; }
+            50% { border-color: var(--secondary); box-shadow: var(--shadow-glow); }
+            100% { border-color: var(--border-color); box-shadow: none; }
+        }
+
+        .node-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            flex-shrink: 0;
+        }
+
+        .node-icon-bronze { background: var(--warning-light); color: var(--warning); }
+        .node-icon-silver { background: var(--primary-light); color: var(--primary); }
+        .node-icon-verify { background: var(--accent-light); color: var(--accent); }
+        .node-icon-gold { background: var(--success-light); color: var(--success); }
+
+        .node-info h3 {
+            font-size: 0.95rem;
+            font-weight: 700;
+            color: var(--text-main);
+            margin-bottom: 2px;
+        }
+
+        .node-info p {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-weight: 500;
+        }
+
+        .node-arrow {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            opacity: 0.5;
+            font-weight: bold;
+        }
+
+        /* Main Workspace Layout */
+        .workspace-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            max-width: 1600px;
+            margin: 2rem auto;
+            width: 100%;
+            padding: 0 5%;
             gap: 2rem;
         }
 
-        /* Sidebar Navigation */
-        aside {
+        .panel-left, .panel-right {
             display: flex;
             flex-direction: column;
-            gap: 0.8rem;
+            gap: 1.5rem;
         }
 
-        .nav-btn {
-            background: transparent;
-            border: 1px solid transparent;
-            color: var(--text-muted);
-            padding: 1rem 1.2rem;
-            border-radius: 12px;
-            text-align: left;
-            font-size: 0.95rem;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            display: flex;
-            align-items: center;
-            gap: 0.8rem;
-        }
-
-        .nav-btn:hover {
-            color: var(--text-main);
-            background: rgba(255, 255, 255, 0.03);
-            border-color: var(--border-color);
-        }
-
-        .nav-btn.active {
-            color: var(--text-main);
-            background: rgba(244, 63, 94, 0.1);
-            border: 1px solid rgba(244, 63, 94, 0.3);
-            box-shadow: 0 4px 20px var(--primary-glow);
-        }
-
-        .nav-btn span.badge {
-            background: var(--primary);
-            color: white;
-            font-size: 0.75rem;
-            padding: 2px 6px;
-            border-radius: 6px;
-            margin-left: auto;
-        }
-
-        /* Content Sections */
-        main {
-            min-height: 500px;
-        }
-
-        .section-panel {
+        .card-panel {
             background: var(--bg-card);
             border: 1px solid var(--border-color);
-            border-radius: 24px;
-            padding: 2.5rem;
-            backdrop-filter: blur(20px);
-            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
-            display: none;
-            animation: fadeIn 0.5s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: var(--shadow-sm);
+            transition: box-shadow 0.3s ease;
         }
 
-        .section-panel.active {
+        .card-panel:hover {
+            box-shadow: var(--shadow-md);
+        }
+
+        .card-panel-title {
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--text-main);
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-bottom: 2px solid var(--bg-light);
+            padding-bottom: 10px;
+        }
+
+        /* Specific Detail Panel Content */
+        .detail-content {
+            display: none;
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        .detail-content.active {
             display: block;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(15px); }
+            from { opacity: 0; transform: translateY(10px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
-        .section-title {
-            font-size: 2rem;
-            font-weight: 800;
-            margin-bottom: 0.5rem;
-            background: var(--grad-accent);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-        .section-subtitle {
-            font-size: 1.1rem;
-            color: var(--text-muted);
-            margin-bottom: 2rem;
-            line-height: 1.5;
-        }
-
-        .grid-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 1.5rem;
-            margin-top: 2rem;
-        }
-
-        .card {
-            background: rgba(255, 255, 255, 0.02);
-            border: 1px solid var(--border-color);
-            border-radius: 16px;
-            padding: 1.5rem;
-            transition: all 0.3s ease;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 4px;
-            background: var(--grad-accent);
-            opacity: 0;
-            transition: opacity 0.3s ease;
-        }
-
-        .card:hover {
-            transform: translateY(-5px);
-            border-color: rgba(244, 63, 94, 0.3);
-            background: rgba(255, 255, 255, 0.04);
-            box-shadow: 0 10px 25px rgba(244, 63, 94, 0.05);
-        }
-
-        .card:hover::before {
-            opacity: 1;
-        }
-
-        .card-icon {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            display: inline-block;
-        }
-
-        .card h3 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            margin-bottom: 0.6rem;
-            color: var(--text-main);
-        }
-
-        .card p {
-            font-size: 0.9rem;
-            color: var(--text-muted);
-            line-height: 1.6;
-        }
-
-        /* Interactive Simulator Styles */
-        .simulator-box {
-            background: #06060a;
-            border-radius: 16px;
-            border: 1px solid var(--border-color);
-            padding: 1.5rem;
-            margin-top: 1.5rem;
-        }
-
-        .sim-controls {
+        .bullet-list {
+            list-style: none;
             display: flex;
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-            flex-wrap: wrap;
+            flex-direction: column;
+            gap: 12px;
+            margin-top: 1rem;
         }
 
-        .sim-btn {
-            background: var(--primary);
+        .bullet-list li {
+            position: relative;
+            padding-left: 28px;
+            font-size: 0.95rem;
+            line-height: 1.6;
+            color: #334155;
+        }
+
+        .bullet-list li::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            top: 2px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--success-light);
+            color: var(--success);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.75rem;
+        }
+
+        .bullet-list li.warning-bullet::before {
+            content: "⚠";
+            background: var(--warning-light);
+            color: var(--warning);
+        }
+
+        /* Simulator Console */
+        .sim-btn-container {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 1.2rem;
+        }
+
+        .btn-action {
+            flex: 1;
+            background: var(--secondary);
             color: white;
             border: none;
-            padding: 0.8rem 1.5rem;
-            border-radius: 10px;
-            font-weight: 600;
+            padding: 0.9rem 1.5rem;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.95rem;
             cursor: pointer;
             transition: all 0.2s ease;
-            box-shadow: 0 4px 15px var(--primary-glow);
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
-        .sim-btn:hover {
+        .btn-action:hover {
             transform: translateY(-2px);
-            box-shadow: 0 6px 20px rgba(244, 63, 94, 0.5);
+            background: #1d4ed8;
+            box-shadow: 0 6px 16px rgba(37, 99, 235, 0.3);
         }
 
-        .sim-btn.secondary-btn {
-            background: rgba(255, 255, 255, 0.05);
+        .btn-action.btn-clear {
+            background: #f1f5f9;
             color: var(--text-main);
             border: 1px solid var(--border-color);
             box-shadow: none;
         }
 
-        .sim-btn.secondary-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
+        .btn-action.btn-clear:hover {
+            background: #e2e8f0;
         }
 
-        .terminal-screen {
-            background: #020204;
-            border: 1px solid rgba(255, 255, 255, 0.05);
-            border-radius: 12px;
+        .console-box {
+            background: #0f172a;
+            border-radius: 16px;
             padding: 1.2rem;
             font-family: 'Courier New', Courier, monospace;
             font-size: 0.85rem;
-            line-height: 1.5;
-            color: #fb7185;
-            max-height: 380px;
+            line-height: 1.6;
+            color: #e2e8f0;
+            height: 380px;
             overflow-y: auto;
-            position: relative;
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.5);
+            border: 1px solid rgba(255,255,255,0.05);
         }
 
-        .terminal-header {
-            display: flex;
-            gap: 6px;
-            margin-bottom: 12px;
-        }
-
-        .dot {
-            width: 10px;
-            height: 10px;
-            border-radius: 50%;
-        }
-
-        .dot-red { background: #ef4444; }
-        .dot-yellow { background: #eab308; }
-        .dot-green { background: #22c55e; }
-
-        .terminal-line {
+        .console-line {
             margin-bottom: 6px;
-            animation: typeEffect 0.3s ease forwards;
+            opacity: 0;
+            animation: showLine 0.3s ease forwards;
         }
 
-        .text-green { color: #4ade80; }
-        .text-blue { color: #60a5fa; }
-        .text-yellow { color: #facc15; }
-
-        /* Architecture Diagram Flowchart */
-        .arch-flow {
-            display: flex;
-            flex-direction: column;
-            gap: 1.5rem;
-            align-items: center;
-            margin: 2rem 0;
+        @keyframes showLine {
+            to { opacity: 1; }
         }
 
-        .flow-step {
-            width: 100%;
-            max-width: 650px;
-            background: rgba(255, 255, 255, 0.01);
+        .text-rose { color: #f43f5e; font-weight: bold; }
+        .text-emerald { color: #10b981; font-weight: bold; }
+        .text-cyan { color: #22d3ee; }
+        .text-amber { color: #fbbf24; }
+
+        /* Comparative Cards */
+        .comp-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .comp-card {
+            background: #f8fafc;
             border: 1px solid var(--border-color);
             border-radius: 12px;
-            padding: 1.2rem 1.5rem;
-            display: flex;
-            align-items: center;
-            gap: 1.5rem;
-            position: relative;
+            padding: 1.2rem;
         }
 
-        .flow-step-num {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: var(--grad-accent);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: 800;
+        .comp-card h4 {
             font-size: 0.95rem;
-            color: white;
-            flex-shrink: 0;
-            box-shadow: 0 0 15px var(--primary-glow);
-        }
-
-        .flow-step-content h4 {
-            font-size: 1.05rem;
             font-weight: 700;
-            margin-bottom: 0.3rem;
-            color: #fda4af;
+            color: var(--text-main);
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
-        .flow-step-content p {
-            font-size: 0.85rem;
+        .comp-card p {
+            font-size: 0.8rem;
             color: var(--text-muted);
             line-height: 1.5;
         }
 
-        .flow-arrow {
-            font-size: 1.5rem;
-            color: var(--primary);
-            opacity: 0.6;
+        /* Info Badge style */
+        .badge-tag {
+            font-size: 0.7rem;
+            font-weight: 700;
+            padding: 3px 8px;
+            border-radius: 6px;
+            text-transform: uppercase;
         }
+        .tag-bronze { background: var(--warning-light); color: var(--warning); }
+        .tag-silver { background: var(--primary-light); color: var(--primary); }
+        .tag-verify { background: var(--accent-light); color: var(--accent); }
+        .tag-gold { background: var(--success-light); color: var(--success); }
 
         /* Footer */
         footer {
             padding: 2rem;
             text-align: center;
             border-top: 1px solid var(--border-color);
+            background: var(--bg-card);
             color: var(--text-muted);
             font-size: 0.85rem;
-            margin-top: 4rem;
+            margin-top: auto;
         }
 
         footer a {
             color: var(--secondary);
             text-decoration: none;
+            font-weight: 600;
         }
     </style>
 </head>
 <body>
 
+    <!-- Header -->
     <header>
         <div class="logo-section">
-            <h1>🛡️ FactCheck-VN Pipeline</h1>
-            <p style="font-size: 0.85rem; color: var(--text-muted); margin-top: 2px;">Pipeline AI Kiểm Chứng Thông Tin & Phát Hiện Tin Giả Tiếng Việt Tự Động</p>
+            <div class="logo-icon">🔍</div>
+            <div class="logo-title">
+                <h1>FactCheck-VN System</h1>
+                <p>Pipeline AI Phát hiện & Kiểm chứng Tin giả mạng xã hội tiếng Việt tự động</p>
+            </div>
         </div>
         <div class="student-info">
             <p>Học viên: <strong>Đoàn Minh Quang</strong></p>
@@ -403,244 +445,290 @@
         </div>
     </header>
 
-    <div class="main-container">
-        <!-- Sidebar Navigation Buttons -->
-        <aside>
-            <button class="nav-btn active" onclick="showPanel(0)">
-                <span>💡</span> Ý Tưởng Sáng Tạo
-            </button>
-            <button class="nav-btn" onclick="showPanel(1)">
-                <span>⚙️</span> Cấu Trúc Pipeline
-            </button>
-            <button class="nav-btn" onclick="showPanel(2)">
-                <span>🕸️</span> RAG & Đồ Thị Tri Thức
-            </button>
-            <button class="nav-btn" onclick="showPanel(3)">
-                <span>🎮</span> Demo Chạy Live
-                <span class="badge">Sim</span>
-            </button>
-            <button class="nav-btn" onclick="showPanel(4)">
-                <span>💎</span> Giá Trị & Tính Khả Thi
-            </button>
-        </aside>
-
-        <!-- Main Content Area -->
-        <main>
-            <!-- Panel 1: Ý Tưởng Sáng Tạo -->
-            <div class="section-panel active">
-                <h2 class="section-title">Ý Tưởng: Hệ thống Phát hiện Tin giả tự nâng cấp</h2>
-                <p class="section-subtitle">
-                    Một pipeline tự động liên tục quét mạng xã hội (Facebook, TikTok) bằng tiếng Việt để phát hiện các phát ngôn nghi vấn, kiểm chứng logic chéo qua các nguồn chính thống và học hỏi từ các quyết định phê duyệt của ban biên tập báo chí.
-                </p>
-
-                <div class="grid-cards">
-                    <div class="card">
-                        <div class="card-icon">📰</div>
-                        <h3>Vấn nạn Tin giả tiếng Việt</h3>
-                        <p>Tin giả về dịch bệnh, thiên tai hoặc chính sách được viết cực kỳ tinh vi. Một hệ thống kiểm chứng thông tin (Fact-checking) thủ công không thể theo kịp tốc độ phát tán của thuật toán MXH.</p>
-                    </div>
-                    <div class="card">
-                        <div class="card-icon">⚡</div>
-                        <h3>Pipeline AI Tự Động</h3>
-                        <p>Hệ thống tự động phát hiện tin nghi vấn, trích xuất "mệnh đề" cốt lõi, đối chiếu chéo với cơ sở dữ liệu chính thống và dán nhãn mức độ tin cậy thời gian thực.</p>
-                    </div>
-                    <div class="card">
-                        <div class="card-icon">🔄</div>
-                        <h3>Flywheel Biên Tập Viên</h3>
-                        <p>Các chỉnh sửa, dán nhãn cuối cùng của biên tập viên báo chí sẽ tạo thành cặp preference pairs DPO nhằm tinh chỉnh lại mô hình kiểm định để AI ngày càng phát hiện tin giả nhạy bén hơn.</p>
-                    </div>
-                </div>
+    <!-- Visual Interactive Flow Diagram -->
+    <div class="pipeline-flow-container">
+        <!-- Node 1 -->
+        <div class="pipeline-node active" id="node-0" onclick="showNode(0)">
+            <div class="node-icon node-icon-bronze">📥</div>
+            <div class="node-info">
+                <h3>1. Thu Thập (Bronze)</h3>
+                <p>Streaming dữ liệu MXH</p>
             </div>
+        </div>
+        <div class="node-arrow">➜</div>
 
-            <!-- Panel 2: Cấu Trúc Pipeline -->
-            <div class="section-panel">
-                <h2 class="section-title">Kiến Trúc Pipeline Xử Lý Tin Tức</h2>
-                <p class="section-subtitle">Luồng đi của dữ liệu từ mạng xã hội đến khi được kiểm chứng và đưa vào vòng lặp huấn luyện:</p>
-
-                <div class="arch-flow">
-                    <div class="flow-step">
-                        <div class="flow-step-num">Bronze</div>
-                        <div class="flow-step-content">
-                            <h4>Raw Ingestion (Lớp Thô)</h4>
-                            <p>Streaming dữ liệu các bài đăng nghi vấn từ Facebook/TikTok. Trích xuất text, metadata (tác giả, tương tác) và làm phẳng cấu trúc dữ liệu.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="flow-arrow">▼</div>
-
-                    <div class="flow-step">
-                        <div class="flow-step-num">Silver</div>
-                        <div class="flow-step-content">
-                            <h4>Validation & Fact-Checking (Lớp Sạch)</h4>
-                            <p>Kiểm tra schema bài viết. Trích xuất các thực thể (người phát ngôn, sự kiện, con số) để đối chiếu chéo với các nguồn tin cậy của Cổng thông tin chính phủ.</p>
-                        </div>
-                    </div>
-
-                    <div class="flow-arrow">▼</div>
-
-                    <div class="flow-step">
-                        <div class="flow-step-num">Gold</div>
-                        <div class="flow-step-content">
-                            <h4>Flywheel & DPO (Lớp Tinh Tế)</h4>
-                            <p>Ghi nhận traces của AI khi phân tích tin tức. Các trường hợp AI nhận diện sai bị Biên tập viên sửa đổi sẽ được gom thành cặp DPO để huấn luyện cải tiến mô hình tiếp theo.</p>
-                        </div>
-                    </div>
-                </div>
+        <!-- Node 2 -->
+        <div class="pipeline-node" id="node-1" onclick="showNode(1)">
+            <div class="node-icon node-icon-silver">🛡️</div>
+            <div class="node-info">
+                <h3>2. Bộ Lọc (Silver)</h3>
+                <p>Schema & Quarantine</p>
             </div>
+        </div>
+        <div class="node-arrow">➜</div>
 
-            <!-- Panel 3: RAG & Đồ Thị Tri Thức -->
-            <div class="section-panel">
-                <h2 class="section-title">Giải Pháp Kỹ Thuật Độc Đáo</h2>
-                <p class="section-subtitle">Hai công nghệ chủ chốt giúp tăng độ chính xác kiểm chứng lên 98%:</p>
-
-                <div class="grid-cards">
-                    <div class="card">
-                        <div class="card-icon">🕸️</div>
-                        <h3>Knowledge Graph (Đồ thị Tri thức)</h3>
-                        <p>Tin giả thường lắt léo bằng cách nối các sự kiện đúng với chủ thể sai (ví dụ: gán phát ngôn của người này cho người khác).</p>
-                        <p style="margin-top: 10px; font-size: 0.85rem; color: var(--secondary);">
-                            👉 Giải pháp: Sử dụng đồ thị tri thức để kiểm chứng mối quan hệ (Ví dụ: <code>Thực thể A</code> -> có phát ngôn <code>B</code> vào ngày <code>C</code> hay không). Giúp trả lời các câu hỏi suy luận chéo (multi-hop).
-                        </p>
-                    </div>
-
-                    <div class="card">
-                        <div class="card-icon">🔬</div>
-                        <h3>Decontamination (Khử nhiễm tập Eval)</h3>
-                        <p>Tránh việc mô hình học vẹt các sự kiện tin giả cũ trong quá trình tinh chỉnh mô hình DPO.</p>
-                        <p style="margin-top: 10px; font-size: 0.85rem; color: var(--secondary);">
-                            👉 Giải pháp: Dùng PhoBERT Semantic Similarity để lọc bỏ những tin bài huấn luyện trùng lặp hoặc quá tương đồng ngữ nghĩa với tập dữ liệu benchmark/đánh giá (Eval Set).
-                        </p>
-                    </div>
-                </div>
+        <!-- Node 3 -->
+        <div class="pipeline-node" id="node-2" onclick="showNode(2)">
+            <div class="node-icon node-icon-verify">🕸️</div>
+            <div class="node-info">
+                <h3>3. Xác Minh (Verify)</h3>
+                <p>Knowledge Graph & RAG</p>
             </div>
+        </div>
+        <div class="node-arrow">➜</div>
 
-            <!-- Panel 4: Demo Chạy Live -->
-            <div class="section-panel">
-                <h2 class="section-title">Trình Mô Phỏng Kiểm Chứng Tin Giả Live</h2>
-                <p class="section-subtitle">Bấm nút để theo dõi cách hệ thống tự động phát hiện, bóc tách thực thể và kết nối nguồn tin chính phủ để lật tẩy tin giả:</p>
-
-                <div class="simulator-box">
-                    <div class="sim-controls">
-                        <button class="sim-btn" onclick="startSim()">Bắt đầu Kiểm Chứng</button>
-                        <button class="sim-btn secondary-btn" onclick="clearSim()">Xóa Logs</button>
-                    </div>
-
-                    <div class="terminal-screen" id="simLog">
-                        <div class="terminal-header">
-                            <div class="dot dot-red"></div>
-                            <div class="dot dot-yellow"></div>
-                            <div class="dot dot-green"></div>
-                        </div>
-                        <div class="terminal-line">[Hệ thống] FactCheck-VN sẵn sàng. Nhấn nút để nạp bài đăng nghi vấn...</div>
-                    </div>
-                </div>
+        <!-- Node 4 -->
+        <div class="pipeline-node" id="node-3" onclick="showNode(3)">
+            <div class="node-icon node-icon-gold">🔄</div>
+            <div class="node-info">
+                <h3>4. Vòng Lặp (Gold)</h3>
+                <p>Fact-checker & Flywheel</p>
             </div>
-
-            <!-- Panel 5: Giá Trị & Tính Khả Thi -->
-            <div class="section-panel">
-                <h2 class="section-title">Khả Thi Thực Tế & Giá Trị Đóng Góp</h2>
-                <p class="section-subtitle">Ý tưởng có tính thực tiễn cực kỳ cao đối với không gian số Việt Nam hiện nay:</p>
-
-                <div class="grid-cards">
-                    <div class="card">
-                        <div class="card-icon">🇻🇳</div>
-                        <h3>Đặc thù tiếng Việt</h3>
-                        <p>Xử lý tốt văn phong tiếng Việt phi cấu trúc, tiếng lóng mạng xã hội và các cấu trúc câu mỉa mai phủ định thông qua mô hình ngôn ngữ tối ưu cho tiếng Việt.</p>
-                    </div>
-                    <div class="card">
-                        <div class="card-icon">📈</div>
-                        <h3>Tối ưu hóa nguồn lực</h3>
-                        <p>Thay vì cần hàng trăm nhân viên rà soát thủ công, AI tự động lọc 95% tin giả rõ ràng, chỉ chuyển 5% tin phức tạp cho biên tập viên và học từ quyết định của họ.</p>
-                    </div>
-                    <div class="card">
-                        <div class="card-icon">💸</div>
-                        <h3>Tiết kiệm Chi Phí</h3>
-                        <p>Cơ chế băm nội dung và lọc chéo giúp hạn chế tối đa việc gọi API embedding lặp đi lặp lại đối với các tin tức cũ được xào xáo lại.</p>
-                    </div>
-                </div>
-            </div>
-        </main>
+        </div>
     </div>
 
+    <!-- Workspace Grid -->
+    <div class="workspace-grid">
+        
+        <!-- Left Panel: Content Detail for active step -->
+        <div class="panel-left">
+            <div class="card-panel">
+                <!-- Content 1: Bronze -->
+                <div class="detail-content active" id="content-0">
+                    <div class="card-panel-title">
+                        <span>📥 Lớp Nạp Thô (Bronze Ingestion Pipeline)</span>
+                        <span class="badge-tag tag-bronze">Bronze</span>
+                    </div>
+                    <p style="color: var(--text-muted); line-height: 1.6; font-size: 0.95rem;">
+                        Thu thập bài đăng, tin đồn nghi vấn từ mạng xã hội (Facebook, TikTok, Telegram) theo thời gian thực bằng cơ chế Topic-partitioning (nhóm theo nguồn tin bài).
+                    </p>
+                    <ul class="bullet-list">
+                        <li><strong>Dữ liệu thô đa dạng:</strong> Thu thập văn bản tiếng Việt phi cấu trúc, hình ảnh chứa chữ, video kèm giọng nói (chuyển sang text).</li>
+                        <li><strong>Lưu trữ nguyên gốc:</strong> Lưu vết toàn bộ dữ liệu thô (raw) và siêu dữ liệu (metadata như tác giả, lượt chia sẻ, thời gian đăng) phục vụ truy vết.</li>
+                        <li><strong>Lợi ích:</strong> Tạo lập kho dữ liệu thô không giới hạn mà không làm nghẽn hoặc ảnh hưởng tới tài nguyên tính toán của lớp kiểm chứng.</li>
+                    </ul>
+                </div>
+
+                <!-- Content 2: Silver -->
+                <div class="detail-content" id="content-1">
+                    <div class="card-panel-title">
+                        <span>🛡️ Lớp Làm Sạch & Cách Ly Lỗi (Silver Gate)</span>
+                        <span class="badge-tag tag-silver">Silver</span>
+                    </div>
+                    <p style="color: var(--text-muted); line-height: 1.6; font-size: 0.95rem;">
+                        Chạy kiểm định tính hợp lệ thông tin qua bộ lọc chất lượng nghiêm ngặt (Quality Gate) và loại bỏ trùng lặp tin tức.
+                    </p>
+                    <ul class="bullet-list">
+                        <li><strong>Định nghĩa Schema pháp lý:</strong> Sử dụng Pandera để xác thực định dạng dữ liệu (bài đăng phải có tối thiểu 20 ký tự, không trống nội dung).</li>
+                        <li><strong>Cơ chế cách ly (Quarantine/DLQ):</strong> Các bài đăng trống rỗng, spam, hoặc ký tự rác được cách ly sang <code>quarantine.csv</code> để giữ hệ thống không bị crash đột ngột.</li>
+                        <li><strong>Deduplication (Trùng lặp bài đăng):</strong> Loại bỏ 90% bài đăng copy-paste, chia sẻ nguyên văn nội dung cũ để tiết kiệm tài nguyên kiểm chứng.</li>
+                    </ul>
+                </div>
+
+                <!-- Content 3: Verify -->
+                <div class="detail-content" id="content-2">
+                    <div class="card-panel-title">
+                        <span>🕸️ Luồng Xác Minh: Đồ Thị Tri Thức Lai Vector RAG</span>
+                        <span class="badge-tag tag-verify">Verify</span>
+                    </div>
+                    <p style="color: var(--text-muted); line-height: 1.6; font-size: 0.95rem; margin-bottom: 1.2rem;">
+                        Giải quyết lỗi "học vẹt" và tin giả đan xen thực thể phức tạp bằng mô hình RAG tích hợp Đồ thị tri thức (Knowledge Graph - KG) chính thống.
+                    </p>
+                    <div class="comp-grid">
+                        <div class="comp-card">
+                            <h4>🔍 Vector Database</h4>
+                            <p>Phục vụ tìm kiếm ngữ nghĩa (Semantic search) các tài liệu, báo cáo báo chí chính thống liên quan nhanh chóng.</p>
+                        </div>
+                        <div class="comp-card">
+                            <h4>🕸️ Knowledge Graph</h4>
+                            <p>Duyệt các mối quan hệ đa bước (multi-hop). So khớp trực tiếp logic: [Ai phát ngôn] -> [Nội dung gì] -> [Thời điểm nào].</p>
+                        </div>
+                    </div>
+                    <ul class="bullet-list" style="margin-top: 1rem;">
+                        <li><strong>Tránh bẫy ngụy tạo:</strong> Giúp lật tẩy việc tin giả gán ghép phát ngôn đúng của lãnh đạo chính phủ vào sai ngữ cảnh thời gian hoặc sai chủ đề.</li>
+                    </ul>
+                </div>
+
+                <!-- Content 4: Gold -->
+                <div class="detail-content" id="content-3">
+                    <div class="card-panel-title">
+                        <span>🔄 Vòng Lặp Phản Hồi Flywheel & DPO</span>
+                        <span class="badge-tag tag-gold">Gold / Flywheel</span>
+                    </div>
+                    <p style="color: var(--text-muted); line-height: 1.6; font-size: 0.95rem;">
+                        Biến quyết định phê duyệt của Biên tập viên (Fact-checker chuyên nghiệp) thành tài nguyên huấn luyện tự động giúp hệ thống thông minh hơn từng ngày.
+                    </p>
+                    <ul class="bullet-list">
+                        <li><strong>Human-in-the-loop:</strong> Khi AI đề xuất nhãn kiểm chứng (Tin thật / Tin giả / Nghi ngờ), các nhà báo chuyên nghiệp sẽ kiểm tra và bấm duyệt hoặc sửa lại.</li>
+                        <li><strong>Preference Mining (Khai thác cặp DPO):</strong> Ghi nhận các trường hợp AI phán đoán sai (rejected) và câu trả lời đã chỉnh sửa đúng của biên tập viên (chosen) để làm cặp Preference Pairs.</li>
+                        <li><strong>Khử nhiễm ngữ nghĩa (Decontamination):</strong> Dùng thuật toán so khớp độ tương đồng để lọc bỏ các bài viết huấn luyện quá giống với tập bài kiểm tra đánh giá (Eval set), giúp model đánh giá khách quan.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Panel: Interactive Tech Stack overview -->
+            <div class="card-panel">
+                <div class="card-panel-title">⚙️ Kiến Trúc Công Nghệ</div>
+                <div class="comp-grid">
+                    <div class="comp-card">
+                        <h4 style="color: var(--secondary);">DuckDB & Python</h4>
+                        <p>Lưu trữ và xử lý toàn bộ dữ liệu trung gian ở local với tốc độ phân tích hàng triệu dòng/giây, không cần cài đặt phức tạp.</p>
+                    </div>
+                    <div class="comp-card">
+                        <h4 style="color: var(--accent);">Neo4j Graph DB</h4>
+                        <p>Lưu trữ đồ thị các mối quan hệ tin cậy như quyết định lập pháp, chỉ thị từ Cổng thông tin Chính phủ Việt Nam.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Panel: Live interactive simulation -->
+        <div class="panel-right">
+            <div class="card-panel" style="flex: 1; display: flex; flex-direction: column;">
+                <div class="card-panel-title">🎮 Bảng Điều Khiển Live Simulator</div>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.2rem;">
+                    Nhấn nút dưới để bắt đầu luồng chạy trực quan hóa dữ liệu kiểm chứng tin đồn tiếng Việt:
+                </p>
+
+                <div class="sim-btn-container">
+                    <button class="btn-action" onclick="runLivePipeline()">⚡ Bắt đầu Kiểm Chứng Live</button>
+                    <button class="btn-action btn-clear" onclick="resetLiveConsole()">Reset</button>
+                </div>
+
+                <div class="console-box" id="consoleScreen">
+                    <div class="console-line">[Hệ thống] Nhấn nút "Kiểm Chứng Live" để bắt đầu nạp và xử lý tin tức...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
     <footer>
-        Dự án mini-game lớp học &copy; 2026. Thiết kế bởi học viên <a href="#">Đoàn Minh Quang</a> (MHV: 2A202600757).
+        Dự án trình bày ý tưởng Mini-game lớp học &copy; 2026. Thiết kế bởi học viên <a href="#">Đoàn Minh Quang</a> (MHV: 2A202600757).
     </footer>
 
     <script>
-        // Navigation controller
-        function showPanel(index) {
-            const panels = document.querySelectorAll('.section-panel');
-            const buttons = document.querySelectorAll('.nav-btn');
+        // Interactive Tabs Controller
+        function showNode(index) {
+            const nodes = document.querySelectorAll('.pipeline-node');
+            const contents = document.querySelectorAll('.detail-content');
             
-            panels.forEach(panel => panel.classList.remove('active'));
-            buttons.forEach(btn => btn.classList.remove('active'));
+            nodes.forEach(n => n.classList.remove('active'));
+            contents.forEach(c => c.classList.remove('active'));
             
-            panels[index].classList.add('active');
-            buttons[index].classList.add('active');
+            nodes[index].classList.add('active');
+            contents[index].classList.add('active');
         }
 
-        // Live Pipeline Simulation Logs for Fact Checking
-        const logs = [
-            { text: "[1/6] [STREAMING] Phát hiện bài viết nghi vấn trên MXH: 'Ngân hàng Nhà nước sắp đổi tiền vào tuần sau...'", type: "warning", delay: 800 },
-            { text: "[2/6] [EXTRACT] Làm phẳng metadata bài viết: Tác giả: 'TinNhanh24h', lượt chia sẻ: 12,400.", type: "info", delay: 1600 },
-            { text: "[3/6] [ENTITY RESOLUTION] Trích xuất thực thể: {Chủ thể: 'Ngân hàng Nhà nước', Hành động: 'đổi tiền', Thời gian: 'tuần sau'}", type: "info", delay: 2400 },
-            { text: "[4/6] [GRAPH QUERY] Truy vấn 2-Hop sang Knowledge Graph của Ngân hàng Nhà nước & Chính phủ...", type: "info", delay: 3200 },
-            { text: "[!] Kết quả Đồ thị: Phát ngôn chính thức gần nhất của Thống đốc NHNN khẳng định 'Thông tin đổi tiền là hoàn toàn bịa đặt'.", type: "blue", delay: 4000 },
-            { text: "[5/6] [JUDGEMENT] AI gắn nhãn cảnh báo bài viết: TIN GIẢ (Mức độ tin cậy: 2%).", type: "warning", delay: 4800 },
-            { text: "[6/6] [EDITS FLOW] Biên tập viên duyệt bài: Trạng thái ĐÃ XÁC NHẬN TIN GIẢ.", type: "success", delay: 5600 },
-            { text: "[+] Tạo cặp Preference Pair: chosen = 'Tuyên bố chính sách chính thức', rejected = 'Bài viết giả mạo'. Đã lưu vào DPO Dataset để cải tiến mô hình.", type: "success", delay: 6400 },
-            { text: "=== HOÀN TẤT KIỂM CHỨNG: Đã cập nhật cảnh báo tin giả lên hệ thống công cộng! ===", type: "success-bold", delay: 7200 }
+        // Live Simulation Logic
+        const pipelineSteps = [
+            {
+                node: 0,
+                log: "[1/7] [📥 BRONZE] Thu thập bài viết MXH: 'Phát hiện tin đồn Thống đốc Ngân hàng Nhà nước ký quyết định đổi tiền vào tuần sau, gây xôn xao dư luận...'",
+                type: "warning"
+            },
+            {
+                node: 1,
+                log: "[2/7] [🛡️ SILVER] Chạy Pandera Quality Gate: Bài viết hợp lệ (>20 kí tự). Kiểm tra Deduplication: Tin bài này trùng lặp với 12 bài đăng copy-paste khác. Đã gộp và loại bỏ trùng.",
+                type: "info"
+            },
+            {
+                node: 1,
+                log: "[!] [🛡️ SILVER QUARANTINE] Phát hiện 2 bài đăng spam rác cùng chủ đề nhưng nội dung trống. Cách ly thành công vào quarantine.csv.",
+                type: "error"
+            },
+            {
+                node: 2,
+                log: "[3/7] [🕸️ VERIFY] Trích xuất thực thể: {Chủ thể: 'Thống đốc NHNN', Sự kiện: 'ký quyết định đổi tiền', Thời gian: 'tuần sau'}",
+                type: "info"
+            },
+            {
+                node: 2,
+                log: "[4/7] [🕸️ VERIFY] Thực hiện ASOF JOIN kết nối dữ liệu: Đối chiếu tin đồn với Cơ sở dữ liệu tuyên bố chính thống của Chính phủ thời điểm gần nhất.",
+                type: "info"
+            },
+            {
+                node: 2,
+                log: "[5/7] [🕸️ VERIFY] Kết quả đối chiếu Đồ thị (Neo4j): Phát ngôn chính thức của Thống đốc NHNN khẳng định 'Tin đồn đổi tiền hoàn toàn bịa đặt'. Nhãn dự kiến: TIN GIẢ (Độ chính xác logic: 99.2%).",
+                type: "success"
+            },
+            {
+                node: 3,
+                log: "[6/7] [🔄 GOLD] Tổng biên tập duyệt quyết định: Đánh nhãn chính thức 'TIN GIẢ'.",
+                type: "success"
+            },
+            {
+                node: 3,
+                log: "[7/7] [🔄 FLYWHEEL] Trích xuất cặp Preference DPO: chosen = 'Tuyên bố bác tin chính thức', rejected = 'Bài viết MXH đổi tiền'. Chạy Decontamination: Loại bỏ 2 cặp trùng ngữ nghĩa tập Eval. Lưu DPO dataset.",
+                type: "success"
+            },
+            {
+                text: "=== PIPELINE HOÀN TẤT THÀNH CÔNG: Mẫu tin giả đã được lật tẩy và đưa vào tập huấn luyện tiếp theo! ===",
+                type: "bold-success"
+            }
         ];
 
-        let simIntervals = [];
+        let executionTimers = [];
 
-        function startSim() {
-            clearSim();
-            const logBox = document.getElementById('simLog');
-            logBox.innerHTML = `
-                <div class="terminal-header">
-                    <div class="dot dot-red"></div>
-                    <div class="dot dot-yellow"></div>
-                    <div class="dot dot-green"></div>
-                </div>
-            `;
+        function runLivePipeline() {
+            resetLiveConsole();
+            const consoleScreen = document.getElementById('consoleScreen');
+            consoleScreen.innerHTML = '';
             
-            logs.forEach(log => {
+            let delayTime = 0;
+            
+            pipelineSteps.forEach((step, idx) => {
                 const timer = setTimeout(() => {
-                    const line = document.createElement('div');
-                    line.className = 'terminal-line';
-                    
-                    if (log.type === "success") {
-                        line.innerHTML = `<span class="text-green">${log.text}</span>`;
-                    } else if (log.type === "warning") {
-                        line.innerHTML = `<span class="text-red">${log.text}</span>`;
-                    } else if (log.type === "blue") {
-                        line.innerHTML = `<span class="text-blue">${log.text}</span>`;
-                    } else if (log.type === "success-bold") {
-                        line.innerHTML = `<strong class="text-green">${log.text}</strong>`;
-                    } else {
-                        line.textContent = log.text;
+                    // Update glowing nodes in diagram
+                    if (step.node !== undefined) {
+                        showNode(step.node);
+                        const nodes = document.querySelectorAll('.pipeline-node');
+                        nodes.forEach(n => n.classList.remove('glowing'));
+                        nodes[step.node].classList.add('glowing');
                     }
                     
-                    logBox.appendChild(line);
-                    logBox.scrollTop = logBox.scrollHeight;
-                }, log.delay);
-                simIntervals.push(timer);
+                    // Print to terminal console
+                    const line = document.createElement('div');
+                    line.className = 'console-line';
+                    
+                    if (step.type === "success") {
+                        line.innerHTML = `<span class="text-emerald">${step.log}</span>`;
+                    } else if (step.type === "error") {
+                        line.innerHTML = `<span class="text-rose">${step.log}</span>`;
+                    } else if (log = step.log) {
+                        if (step.type === "warning") {
+                            line.innerHTML = `<span class="text-amber">${step.log}</span>`;
+                        } else {
+                            line.textContent = step.log;
+                        }
+                    } else if (step.type === "bold-success") {
+                        line.innerHTML = `<strong class="text-emerald">${step.text}</strong>`;
+                        // Remove glowing effect at end
+                        const nodes = document.querySelectorAll('.pipeline-node');
+                        nodes.forEach(n => n.classList.remove('glowing'));
+                    }
+                    
+                    consoleScreen.appendChild(line);
+                    consoleScreen.scrollTop = consoleScreen.scrollHeight;
+                }, delayTime);
+                
+                executionTimers.push(timer);
+                delayTime += 1200; // time offset between logs
             });
         }
 
-        function clearSim() {
-            simIntervals.forEach(timer => clearTimeout(timer));
-            simIntervals = [];
-            const logBox = document.getElementById('simLog');
-            logBox.innerHTML = `
-                <div class="terminal-header">
-                    <div class="dot dot-red"></div>
-                    <div class="dot dot-yellow"></div>
-                    <div class="dot dot-green"></div>
-                </div>
-                <div class="terminal-line">[Hệ thống] FactCheck-VN sẵn sàng. Nhấn nút để nạp bài đăng nghi vấn...</div>
+        function resetLiveConsole() {
+            executionTimers.forEach(t => clearTimeout(t));
+            executionTimers = [];
+            
+            const nodes = document.querySelectorAll('.pipeline-node');
+            nodes.forEach(n => n.classList.remove('glowing'));
+            
+            const consoleScreen = document.getElementById('consoleScreen');
+            consoleScreen.innerHTML = `
+                <div class="console-line">[Hệ thống] FactCheck-VN sẵn sàng. Nhấn nút "Kiểm Chứng Live" để bắt đầu...</div>
             `;
+            showNode(0);
         }
     </script>
 </body>
