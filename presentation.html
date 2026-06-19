@@ -619,9 +619,17 @@
         <div class="panel-right">
             <div class="card-panel" style="flex: 1; display: flex; flex-direction: column;">
                 <div class="card-panel-title">🎮 Bảng Điều Khiển Live Simulator</div>
-                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 1.2rem;">
-                    Nhấn nút dưới để bắt đầu luồng chạy trực quan hóa dữ liệu kiểm chứng tin đồn tiếng Việt:
+                
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-bottom: 0.6rem;">
+                    Chọn mẫu tin tức đầu vào nghi vấn:
                 </p>
+                <div style="margin-bottom: 1.2rem;">
+                    <select id="newsSelector" onchange="resetLiveConsole()" style="width: 100%; padding: 0.8rem; border-radius: 10px; border: 1px solid var(--border-color); font-weight: 600; color: var(--text-main); background-color: var(--bg-light); outline: none; cursor: pointer;">
+                        <option value="fake_news">Mẫu A: Tin đồn giả mạo tài chính (NHNN đổi tiền)</option>
+                        <option value="true_news">Mẫu B: Tin tức thật chính thống (MTTQ sao kê cứu trợ)</option>
+                        <option value="spam_news">Mẫu C: Tin bài rác/Spam quảng cáo (Link nhận thưởng 500K)</option>
+                    </select>
+                </div>
 
                 <div class="sim-btn-container">
                     <button class="btn-action" onclick="runLivePipeline()">⚡ Bắt đầu Kiểm Chứng Live</button>
@@ -653,53 +661,122 @@
             contents[index].classList.add('active');
         }
 
-        // Live Simulation Logic
-        const pipelineSteps = [
-            {
-                node: 1,
-                log: "[1/7] [📥 BRONZE] Thu thập bài viết MXH: 'Phát hiện tin đồn Thống đốc Ngân hàng Nhà nước ký quyết định đổi tiền vào tuần sau, gây xôn xao dư luận...'",
-                type: "warning"
-            },
-            {
-                node: 2,
-                log: "[2/7] [🛡️ SILVER] Chạy Pandera Quality Gate: Bài viết hợp lệ (>20 kí tự). Kiểm tra Deduplication: Tin bài này trùng lặp với 12 bài đăng copy-paste khác. Đã gộp và loại bỏ trùng.",
-                type: "info"
-            },
-            {
-                node: 2,
-                log: "[!] [🛡️ SILVER QUARANTINE] Phát hiện 2 bài đăng spam rác cùng chủ đề nhưng nội dung trống. Cách ly thành công vào quarantine.csv.",
-                type: "error"
-            },
-            {
-                node: 3,
-                log: "[3/7] [🕸️ VERIFY] Trích xuất thực thể: {Chủ thể: 'Thống đốc NHNN', Sự kiện: 'ký quyết định đổi tiền', Thời gian: 'tuần sau'}",
-                type: "info"
-            },
-            {
-                node: 3,
-                log: "[4/7] [🕸️ VERIFY] Thực hiện ASOF JOIN kết nối dữ liệu: Đối chiếu tin đồn với Cơ sở dữ liệu tuyên bố chính thống của Chính phủ thời điểm gần nhất.",
-                type: "info"
-            },
-            {
-                node: 3,
-                log: "[5/7] [🕸️ VERIFY] Kết quả đối chiếu Đồ thị (Neo4j): Phát ngôn chính thức của Thống đốc NHNN khẳng định 'Tin đồn đổi tiền hoàn toàn bịa đặt'. Nhãn dự kiến: TIN GIẢ (Độ chính xác logic: 99.2%).",
-                type: "success"
-            },
-            {
-                node: 4,
-                log: "[6/7] [🔄 GOLD] Tổng biên tập duyệt quyết định: Đánh nhãn chính thức 'TIN GIẢ'.",
-                type: "success"
-            },
-            {
-                node: 4,
-                log: "[7/7] [🔄 FLYWHEEL] Trích xuất cặp Preference DPO: chosen = 'Tuyên bố bác tin chính thức', rejected = 'Bài viết MXH đổi tiền'. Chạy Decontamination: Loại bỏ 2 cặp trùng ngữ nghĩa tập Eval. Lưu DPO dataset.",
-                type: "success"
-            },
-            {
-                text: "=== PIPELINE HOÀN TẤT THÀNH CÔNG: Mẫu tin giả đã được lật tẩy và đưa vào tập huấn luyện tiếp theo! ===",
-                type: "bold-success"
-            }
-        ];
+        // Multiple Pipeline Scenarios Database
+        const pipelineScenarios = {
+            fake_news: [
+                {
+                    node: 1,
+                    log: "[1/7] [📥 BRONZE] Thu thập bài viết MXH: 'Phát hiện tin đồn Thống đốc Ngân hàng Nhà nước ký quyết định đổi tiền vào tuần sau, gây xôn xao dư luận...'",
+                    type: "warning"
+                },
+                {
+                    node: 2,
+                    log: "[2/7] [🛡️ SILVER] Chạy Pandera Quality Gate: Bài viết hợp lệ (>20 kí tự). Kiểm tra Deduplication: Tin bài này trùng lặp với 12 bài đăng copy-paste khác. Đã gộp và loại bỏ trùng.",
+                    type: "info"
+                },
+                {
+                    node: 2,
+                    log: "[!] [🛡️ SILVER QUARANTINE] Phát hiện 2 bài đăng spam rác cùng chủ đề nhưng nội dung trống. Cách ly thành công vào quarantine.csv.",
+                    type: "error"
+                },
+                {
+                    node: 3,
+                    log: "[3/7] [🕸️ VERIFY] Trích xuất thực thể: {Chủ thể: 'Thống đốc NHNN', Sự kiện: 'ký quyết định đổi tiền', Thời gian: 'tuần sau'}",
+                    type: "info"
+                },
+                {
+                    node: 3,
+                    log: "[4/7] [🕸️ VERIFY] Thực hiện ASOF JOIN kết nối dữ liệu: Đối chiếu tin đồn với Cơ sở dữ liệu tuyên bố chính thống của Chính phủ thời điểm gần nhất.",
+                    type: "info"
+                },
+                {
+                    node: 3,
+                    log: "[5/7] [🕸️ VERIFY] Kết quả đối chiếu Đồ thị (Neo4j): Phát ngôn chính thức của Thống đốc NHNN khẳng định 'Tin đồn đổi tiền hoàn toàn bịa đặt'. Nhãn dự kiến: TIN GIẢ (Độ chính xác logic: 99.2%).",
+                    type: "success"
+                },
+                {
+                    node: 4,
+                    log: "[6/7] [🔄 GOLD] Tổng biên tập duyệt quyết định: Đánh nhãn chính thức 'TIN GIẢ' và phát cảnh báo rộng rãi.",
+                    type: "success"
+                },
+                {
+                    node: 4,
+                    log: "[7/7] [🔄 FLYWHEEL] Trích xuất cặp Preference DPO: chosen = 'Tuyên bố bác tin chính thức', rejected = 'Bài viết MXH đổi tiền'. Chạy Decontamination: Loại bỏ 2 cặp trùng ngữ nghĩa tập Eval. Lưu DPO dataset.",
+                    type: "success"
+                },
+                {
+                    text: "=== PIPELINE HOÀN TẤT: Đã lật tẩy TIN GIẢ thành công và đưa dữ liệu DPO để huấn luyện cải tiến mô hình! ===",
+                    type: "bold-success"
+                }
+            ],
+            true_news: [
+                {
+                    node: 1,
+                    log: "[1/7] [📥 BRONZE] Thu thập bài viết MXH: 'Ủy ban Trung ương Mặt trận Tổ quốc Việt Nam công bố toàn bộ sao kê tài khoản ngân hàng ủng hộ bão lũ...'",
+                    type: "info"
+                },
+                {
+                    node: 2,
+                    log: "[2/7] [🛡️ SILVER] Chạy Pandera Quality Gate: Bài viết hợp lệ. Deduplication: Phát hiện 3 bài đăng chia sẻ lại bài viết gốc. Đã gộp và chỉ giữ lại bài có tương tác cao nhất.",
+                    type: "info"
+                },
+                {
+                    node: 3,
+                    log: "[3/7] [🕸️ VERIFY] Trích xuất thực thể: {Chủ thể: 'MTTQ Việt Nam', Sự kiện: 'công bố sao kê quyên góp', Trạng thái: 'đã thực hiện'}",
+                    type: "info"
+                },
+                {
+                    node: 3,
+                    log: "[4/7] [🕸️ VERIFY] Thực hiện ASOF JOIN: Đối chiếu chéo với Cổng thông tin chính phủ và báo chí Trung ương.",
+                    type: "info"
+                },
+                {
+                    node: 3,
+                    log: "[5/7] [🕸️ VERIFY] Kết quả đối chiếu Đồ thị (Neo4j): Trùng khớp hoàn toàn với Văn bản thông báo 1204/TB-MTTW của Ủy ban Trung ương. Nhãn dự kiến: TIN CHÍNH THỐNG.",
+                    type: "success"
+                },
+                {
+                    node: 4,
+                    log: "[6/7] [🔄 GOLD] Biên tập viên phê duyệt: Đánh dấu nhãn 'TIN CHÍNH THỐNG' và hiển thị tích xanh kiểm định.",
+                    type: "success"
+                },
+                {
+                    node: 4,
+                    log: "[7/7] [🔄 FLYWHEEL] Lưu trữ văn bản: Đưa bài đăng vào tập ngữ liệu huấn luyện ngôn ngữ chính thống (SFT Dataset) giúp mô hình AI viết chính xác văn phong báo chí Việt Nam.",
+                    type: "success"
+                },
+                {
+                    text: "=== PIPELINE HOÀN TẤT: Xác nhận TIN CHÍNH THỐNG thành công và đưa vào tập dữ liệu tinh chỉnh! ===",
+                    type: "bold-success"
+                }
+            ],
+            spam_news: [
+                {
+                    node: 1,
+                    log: "[1/4] [📥 BRONZE] Thu thập bài đăng MXH: '🎉 NHẬN LÌ XÌ KHỦNG 500K MIỄN PHÍ! Click ngay link: http://tin-tuc-doc-hai.xyz/lixi để nhận quà ngay hôm nay...'",
+                    type: "warning"
+                },
+                {
+                    node: 2,
+                    log: "[2/4] [🛡️ SILVER] Chạy Pandera Quality Gate: PHÁT HIỆN LỖI SCHEMA! Bài viết chứa tên miền lừa đảo nguy hại nằm trong Blacklist, không có nội dung tin tức thực sự.",
+                    type: "error"
+                },
+                {
+                    node: 2,
+                    log: "[3/4] [🛡️ SILVER QUARANTINE] Kích hoạt cơ chế cách ly: Tự động di chuyển bài viết sang danh mục tin rác/spam (quarantine.csv).",
+                    type: "error"
+                },
+                {
+                    node: 2,
+                    log: "[4/4] [⚠️ HỆ THỐNG] Dừng pipeline sớm đối với tin bài rác/spam để tiết kiệm tài nguyên kiểm chứng của Verify và Gold. Không ghi nhận DPO/SFT.",
+                    type: "warning"
+                },
+                {
+                    text: "=== PIPELINE KẾT THÚC SỚM: Đã cách ly bài viết spam lừa đảo thành công vào Quarantine! ===",
+                    type: "bold-success"
+                }
+            ]
+        };
 
         let executionTimers = [];
 
@@ -708,9 +785,13 @@
             const consoleScreen = document.getElementById('consoleScreen');
             consoleScreen.innerHTML = '';
             
+            // Get selected scenario
+            const selector = document.getElementById('newsSelector');
+            const scenario = pipelineScenarios[selector.value] || pipelineScenarios['fake_news'];
+            
             let delayTime = 0;
             
-            pipelineSteps.forEach((step, idx) => {
+            scenario.forEach((step, idx) => {
                 const timer = setTimeout(() => {
                     // Update glowing nodes in diagram
                     if (step.node !== undefined) {
@@ -728,7 +809,7 @@
                         line.innerHTML = `<span class="text-emerald">${step.log}</span>`;
                     } else if (step.type === "error") {
                         line.innerHTML = `<span class="text-rose">${step.log}</span>`;
-                    } else if (log = step.log) {
+                    } else if (step.log) {
                         if (step.type === "warning") {
                             line.innerHTML = `<span class="text-amber">${step.log}</span>`;
                         } else {
@@ -757,9 +838,12 @@
             const nodes = document.querySelectorAll('.pipeline-node');
             nodes.forEach(n => n.classList.remove('glowing'));
             
+            const selector = document.getElementById('newsSelector');
+            const selectedText = selector.options[selector.selectedIndex].text;
+            
             const consoleScreen = document.getElementById('consoleScreen');
             consoleScreen.innerHTML = `
-                <div class="console-line">[Hệ thống] FactCheck-VN sẵn sàng. Nhấn nút "Kiểm Chứng Live" để bắt đầu...</div>
+                <div class="console-line">[Hệ thống] Đã sẵn sàng xử lý: <strong>${selectedText}</strong>. Nhấn nút "Kiểm Chứng Live" để bắt đầu...</div>
             `;
             showNode(0);
         }
